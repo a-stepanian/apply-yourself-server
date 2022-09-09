@@ -36,7 +36,7 @@ applicationRoutes.route("/applications/:id").get(function (req, res) {
 });
 
 // Create a new application
-applicationRoutes.route("/applications/add").post((req, response) => {
+applicationRoutes.route("/applications/new").post((req, response) => {
   let db_connect = dbo.getDb();
   let myobj = {
     company: req.body.company,
