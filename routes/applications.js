@@ -54,14 +54,18 @@ applicationRoutes.route("/applications/new").post((req, response) => {
 });
 
 // Update an application
-applicationRoutes.route("/update/:id").post((req, response) => {
+applicationRoutes.route("/applications/:id").put((req, response) => {
   let db_connect = dbo.getDb();
   let myquery = { _id: ObjectId(req.params.id) };
   let newvalues = {
     $set: {
-      name: req.body.name,
+      company: req.body.company,
       position: req.body.position,
-      level: req.body.level,
+      website: req.body.website,
+      location: req.body.location,
+      applied: req.body.applied,
+      comments: req.body.comments,
+      status: req.body.status,
     },
   };
   db_connect
