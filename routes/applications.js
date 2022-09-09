@@ -78,7 +78,7 @@ applicationRoutes.route("/applications/:id").put((req, response) => {
 });
 
 // Delete an application
-applicationRoutes.route("/:id").delete((req, response) => {
+applicationRoutes.route("/applications/:id").delete((req, response) => {
   let db_connect = dbo.getDb();
   let myquery = { _id: ObjectId(req.params.id) };
   db_connect.collection("applications").deleteOne(myquery, function (err, obj) {
