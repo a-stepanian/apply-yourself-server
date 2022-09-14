@@ -13,6 +13,7 @@ const ObjectId = require("mongodb").ObjectId;
 
 // Get all applications
 applicationRoutes.route("/applications").get(function (req, res) {
+  console.log("get request to /applications");
   let db_connect = dbo.getDb("jobhunt");
   db_connect
     .collection("applications")
@@ -37,25 +38,24 @@ applicationRoutes.route("/applications/:id").get(function (req, res) {
 
 // Create a new application
 applicationRoutes.route("/applications/new").post((req, response) => {
-  const { company, position, website, location, applied, comments, status } =
-    req.body;
+  console.log("post request to /applications/new");
   let db_connect = dbo.getDb();
-  db_connect.collection("applications").insertOne(
-    {
-      company,
-      position,
-      website,
-      location,
-      applied,
-      response,
-      comments,
-      status,
-    },
-    (err, res) => {
+  let newApplication = {
+    company: req.body.company,
+    position: req.body.position,
+    website: req.body.website,
+    location: req.body.location,
+    applied: req.body.applied,
+    response: req.body.response,
+    comments: req.body.comments,
+    status: req.body.status,
+  };
+  db_connect
+    .collection("applications")
+    .insertOne(newApplication, (err, res) => {
       if (err) throw err;
       response.json(res);
-    }
-  );
+    });
 });
 
 // Update an application
