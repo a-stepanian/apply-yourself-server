@@ -8,7 +8,7 @@ const applicationRoutes = express.Router();
 // This will help us connect to the database
 const dbo = require("../db/conn");
 
-// This help convert the id from string to ObjectId for the _id.
+// This helps convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId;
 
 // Get all applications
@@ -37,26 +37,30 @@ applicationRoutes.route("/applications/:id").get(function (req, res) {
 
 // Create a new application
 applicationRoutes.route("/applications/new").post((req, response) => {
+  const { company, position, website, location, applied, comments, status } =
+    req.body;
   let db_connect = dbo.getDb();
-  let myobj = {
-    company: req.body.company,
-    position: req.body.position,
-    website: req.body.website,
-    location: req.body.location,
-    applied: req.body.applied,
-    comments: req.body.comments,
-    status: req.body.status,
-  };
-  db_connect.collection("applications").insertOne(myobj, (err, res) => {
-    if (err) throw err;
-    response.json(res);
-  });
+  db_connect.collection("applications").insertOne(
+    {
+      company,
+      position,
+      website,
+      location,
+      applied,
+      comments,
+      status,
+    },
+    (err, res) => {
+      if (err) throw err;
+      response.json(res);
+    }
+  );
 });
 
 // Update an application
 applicationRoutes.route("/applications/:id").put((req, response) => {
   let db_connect = dbo.getDb();
-  let myquery = { _id: ObjectId(req.params.id) };
+  let foundApplication = { _id: ObjectId(req.params.id) };
   let newvalues = {
     $set: {
       company: req.body.company,
@@ -70,7 +74,7 @@ applicationRoutes.route("/applications/:id").put((req, response) => {
   };
   db_connect
     .collection("applications")
-    .updateOne(myquery, newvalues, (err, res) => {
+    .updateOne(foundApplication, newvalues, (err, res) => {
       if (err) throw err;
       console.log("1 document updated");
       response.json(res);
