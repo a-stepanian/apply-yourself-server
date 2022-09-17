@@ -1,15 +1,20 @@
 const express = require("express");
-
-// applicationRoutes is an instance of the express router.
-// We use it to define our routes.
-// The router will be added as a middleware and will take control of requests starting with path /applications.
 const applicationRoutes = express.Router();
 
-// This will help us connect to the database
+// used to connect to the database
 const dbo = require("../db/conn");
 
-// This helps convert the id from string to ObjectId for the _id.
+// used to convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId;
+
+// apply-yourself.com/users/new POST
+// apply-yourself.com/users/userid GET,PUT,DELETE
+
+// apply-yourself.com/users/userid/applications   GET
+// apply-yourself.com/users/userid/applications/appid GET, PUT, DELETE
+// apply-yourself.com/users/userid/applications/new POST
+
+// apply-yourself.com/users/userid/dashboard
 
 // Get all applications
 applicationRoutes.route("/applications").get(function (req, res) {
