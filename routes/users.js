@@ -1,10 +1,6 @@
 const express = require("express");
-const applicationRoutes = express.Router();
-
-// used to connect to the database
+const userRoutes = express.Router();
 const dbo = require("../db/conn");
-
-// used to convert the id from string to ObjectId for the _id.
 const ObjectId = require("mongodb").ObjectId;
 
 // apply-yourself.com/users/new POST
@@ -16,20 +12,22 @@ const ObjectId = require("mongodb").ObjectId;
 
 // apply-yourself.com/users/userid/dashboard
 
-// Get all applications
-applicationRoutes.route("/applications").get(function (req, res) {
-  let db_connect = dbo.getDb("jobhunt");
-  db_connect
-    .collection("applications")
-    .find({})
-    .toArray(function (err, result) {
-      if (err) throw err;
-      res.json(result);
-    });
+// Create new user
+userRoutes.route("/users").post((req, res) => {
+  let db_connect = dbo.getDb();
+  let newUser = {
+    username: req.body.username,
+    password: req.body.password,
+    applications: [],
+  };
+  db_connect.collection("applications").insertOne(newUser, (err, res) => {
+    if (err) throw err;
+    response.json(res);
+  });
 });
 
 // Get a single application
-applicationRoutes.route("/applications/:id").get(function (req, res) {
+userRoutes.route("/applications/:id").get(function (req, res) {
   let db_connect = dbo.getDb();
   let myquery = { _id: ObjectId(req.params.id) };
   db_connect
@@ -41,7 +39,7 @@ applicationRoutes.route("/applications/:id").get(function (req, res) {
 });
 
 // Create a new application
-applicationRoutes.route("/applications/new").post((req, response) => {
+userRoutes.route("/applications/new").post((req, response) => {
   let db_connect = dbo.getDb();
   let newApplication = {
     company: req.body.company,
@@ -62,7 +60,7 @@ applicationRoutes.route("/applications/new").post((req, response) => {
 });
 
 // Update an application
-applicationRoutes.route("/applications/:id").put((req, response) => {
+userRoutes.route("/applications/:id").put((req, response) => {
   let db_connect = dbo.getDb();
   let foundApplication = { _id: ObjectId(req.params.id) };
   let newvalues = {
@@ -87,7 +85,7 @@ applicationRoutes.route("/applications/:id").put((req, response) => {
 });
 
 // Delete an application
-applicationRoutes.route("/applications/:id").delete((req, response) => {
+userRoutes.route("/applications/:id").delete((req, response) => {
   let db_connect = dbo.getDb();
   let myquery = { _id: ObjectId(req.params.id) };
   db_connect.collection("applications").deleteOne(myquery, function (err, obj) {
@@ -97,4 +95,4 @@ applicationRoutes.route("/applications/:id").delete((req, response) => {
   });
 });
 
-module.exports = applicationRoutes;
+module.exports = userRoutes;
