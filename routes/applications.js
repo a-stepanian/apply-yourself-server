@@ -32,12 +32,10 @@ applicationRoutes.route("/applications").get(function (req, res) {
 applicationRoutes.route("/applications/:id").get(function (req, res) {
   let db_connect = dbo.getDb();
   let myquery = { _id: ObjectId(req.params.id) };
-  db_connect
-    .collection("applications")
-    .findOne(myquery, function (err, result) {
-      if (err) throw err;
-      res.json(result);
-    });
+  db_connect.collection("applications").findOne(myquery, (err, result) => {
+    if (err) throw err;
+    res.json(result);
+  });
 });
 
 // Create a new application
