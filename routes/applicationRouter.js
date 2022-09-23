@@ -1,12 +1,49 @@
 const router = require("express").Router();
 const User = require("../models/userModel");
+const Application = require("../models/applicationModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 //-------------------
-// REGISTER USER
+// CREATE NEW APPLICAITON
 //-------------------
 router.post("/", async (req, res) => {
+  try {
+    const {
+      company,
+      position,
+      website,
+      location,
+      applied,
+      response,
+      comments,
+      status,
+    } = req.body;
+
+    const newApplication = new Application({
+      company,
+      position,
+      website,
+      location,
+      applied,
+      response,
+      comments,
+      status,
+    });
+
+    const savedApplication = await newApplication.save();
+
+    res.json(savedApplication);
+  } catch (error) {
+    console.error(err);
+    res.status(500).send();
+  }
+});
+
+//-------------------
+// GET ALL APPLICATIONS
+//-------------------
+router.get("/", async (req, res) => {
   try {
     const { username, email, password, passwordVerify } = req.body;
 
@@ -39,7 +76,7 @@ router.post("/", async (req, res) => {
       return res.status(400).json({
         errorMessage: "An account with this username already exists.",
       });
-
+    console.log("Salt & hash the password");
     // Salt & hash the password
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -49,7 +86,6 @@ router.post("/", async (req, res) => {
       username,
       email,
       passwordHash,
-      applications: [],
     });
     const savedUser = await newUser.save();
 
@@ -72,84 +108,6 @@ router.post("/", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send();
-  }
-});
-
-//-------------------
-// LOG IN USER
-//-------------------
-router.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Validate user input
-    // 1. Ensure required fields are filled out
-    if (!email || !password)
-      return res
-        .status(400)
-        .json({ errorMessage: "Please enter all required fields." });
-    // 2. Confirm user with that email exists
-    const existingUser = await User.findOne({ email });
-    if (!existingUser)
-      return res.status(401).json({ errorMessage: "Wrong email or password." });
-    // 3. Compare password with db hashed password
-    const passwordCorrect = await bcrypt.compare(
-      password,
-      existingUser.passwordHash
-    );
-    if (!passwordCorrect)
-      return res.status(401).json({ errorMessage: "Wrong email or password." });
-
-    // Create token and sign with the secret
-    const token = jwt.sign(
-      {
-        user: existingUser._id,
-      },
-      process.env.JWT_SECRET
-    );
-
-    // Send the token in an http-only cookie
-    res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-      .send();
-  } catch (err) {
-    console.error(err);
-    res.status(500).send();
-  }
-});
-
-//-------------------
-// LOG OUT USER
-//-------------------
-router.get("/logout", (req, res) => {
-  //  Set token to empty string and make it expired
-  res
-    .cookie("token", "", {
-      httpOnly: true,
-      expires: new Date(0),
-      secure: true,
-      sameSite: "none",
-    })
-    .send();
-});
-
-//-------------------
-// VERIFY USER HAS TOKEN AND SECRET MATCHES
-//-------------------
-router.get("/loggedIn", (req, res) => {
-  try {
-    const token = req.cookies.token;
-    if (!token) return res.json(false);
-
-    jwt.verify(token, process.env.JWT_SECRET);
-
-    res.send(true);
-  } catch (err) {
-    res.json(true);
   }
 });
 

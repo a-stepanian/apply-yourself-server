@@ -37,5 +37,5 @@ mongoose.connect(
 );
 
 // set up routes
-app.use(require("./routes/applications"));
 app.use("/auth", require("./routes/userRouter"));
+app.use("/applications", require("./routes/applicationRouter"));
