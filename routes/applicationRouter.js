@@ -7,7 +7,6 @@ const auth = require("../middleware/auth");
 // CREATE NEW APPLICAITON
 //-------------------
 router.post("/", auth, async (req, res) => {
-  console.log("hit route to create new application");
   try {
     // get mongodb _id from user (added to req object from cookie in auth middleware)
     const user = req.user;
@@ -54,10 +53,10 @@ router.post("/", auth, async (req, res) => {
 //-------------------
 
 router.get("/", auth, async (req, res) => {
-  const id = req.user;
-  console.log("id:", id);
+  const id = req.user; //req.user added in auth middleware
   try {
-    const existingUser = await User.find({ id });
+    const foundApplications = await Application.find({ user: id });
+    res.json(foundApplications);
   } catch (err) {
     console.error(err);
     res.status(500).send();
