@@ -1,14 +1,14 @@
 const express = require("express");
-const app = express();
 const mongoose = require("mongoose");
+require("dotenv").config({ path: "./config.env" });
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-require("dotenv").config({ path: "./config.env" });
 
 // heroku will assign an env var port.
 const port = process.env.PORT || 5000;
 
 // set up server
+const app = express();
 app.listen(port, () => console.log(`Server started on port: ${port}`));
 
 app.use(express.json());

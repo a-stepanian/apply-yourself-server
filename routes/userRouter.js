@@ -65,10 +65,9 @@ router.post("/", async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
       })
       .send();
+    console.log(res.cookie);
   } catch (err) {
     console.error(err);
     res.status(500).send();
@@ -80,25 +79,29 @@ router.post("/", async (req, res) => {
 //-------------------
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     // Validate user input
     // 1. Ensure required fields are filled out
-    if (!email || !password)
+    if (!username || !password)
       return res
         .status(400)
         .json({ errorMessage: "Please enter all required fields." });
-    // 2. Confirm user with that email exists
-    const existingUser = await User.findOne({ email });
+    // 2. Confirm user with that username exists
+    const existingUser = await User.findOne({ username });
     if (!existingUser)
-      return res.status(401).json({ errorMessage: "Wrong email or password." });
+      return res
+        .status(401)
+        .json({ errorMessage: "Wrong username or password." });
     // 3. Compare password with db hashed password
     const passwordCorrect = await bcrypt.compare(
       password,
       existingUser.passwordHash
     );
     if (!passwordCorrect)
-      return res.status(401).json({ errorMessage: "Wrong email or password." });
+      return res
+        .status(401)
+        .json({ errorMessage: "Wrong username or password." });
 
     // Create token and sign with the secret
     const token = jwt.sign(
@@ -112,8 +115,6 @@ router.post("/login", async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
       })
       .send();
   } catch (err) {
@@ -131,8 +132,6 @@ router.get("/logout", (req, res) => {
     .cookie("token", "", {
       httpOnly: true,
       expires: new Date(0),
-      secure: true,
-      sameSite: "none",
     })
     .send();
 });
@@ -143,13 +142,12 @@ router.get("/logout", (req, res) => {
 router.get("/loggedIn", (req, res) => {
   try {
     const token = req.cookies.token;
+
     if (!token) return res.json(false);
-
     jwt.verify(token, process.env.JWT_SECRET);
-
     res.send(true);
   } catch (err) {
-    res.json(true);
+    res.json(false);
   }
 });
 
