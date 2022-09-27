@@ -3,9 +3,9 @@ const Application = require("../models/applicationModel");
 const User = require("../models/userModel");
 const auth = require("../middleware/auth");
 
-//-------------------
-// CREATE NEW APPLICAITON
-//-------------------
+//-----------------------
+// CREATE NEW APPLICATION
+//-----------------------
 router.post("/", auth, async (req, res) => {
   try {
     // get mongodb _id from user (added to req object from cookie in auth middleware)
@@ -48,10 +48,9 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-//-------------------
+//-----------------------
 // GET ALL APPLICATIONS
-//-------------------
-
+//-----------------------
 router.get("/", auth, async (req, res) => {
   const id = req.user; //req.user added in auth middleware
   try {
@@ -60,6 +59,38 @@ router.get("/", auth, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send();
+  }
+});
+
+//-----------------------
+// GET SINGLE APPLICATION
+//-----------------------
+router.get("/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const foundApplication = await Application.findById(id);
+    res.json(foundApplication);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send();
+  }
+});
+
+//-----------------------
+// EDIT SINGLE APPLICATION
+//-----------------------
+router.put("/:id", auth, async (req, res) => {
+  const { id } = req.params;
+  const updatedApp = req.body;
+
+  //Update application
+  try {
+    const application = await Application.findByIdAndUpdate(id, updatedApp);
+    await application.save();
+    // Respond with old values
+    res.json(application);
+  } catch (error) {
+    console.log(error);
   }
 });
 

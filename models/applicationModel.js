@@ -12,7 +12,7 @@ const applicationSchema = new Schema({
   location: { type: String, required: true },
   applied: { type: String, required: true },
   response: { type: String },
-  comments: { type: String, required: true },
+  comments: { type: String },
   status: { type: String, required: true },
 });
 
