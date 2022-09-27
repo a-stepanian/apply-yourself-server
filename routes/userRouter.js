@@ -2,6 +2,7 @@ const router = require("express").Router();
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const auth = require("../middleware/auth");
 
 //-------------------
 // REGISTER USER
@@ -149,6 +150,21 @@ router.get("/loggedIn", (req, res) => {
     res.send(true);
   } catch (err) {
     res.json(false);
+  }
+});
+
+//-------------------
+// GET SINGLE USER
+//-------------------
+router.get("/", auth, async (req, res) => {
+  const id = req.user;
+  try {
+    const foundUser = await User.findById(id);
+    const justTheName = { username: foundUser.username };
+    res.json(justTheName);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send();
   }
 });
 
