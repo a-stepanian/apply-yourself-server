@@ -5,3 +5,5 @@ Learnings:
 - Basic auth flow -> salt and hash password and store that in db (never actual pwd) and use that for comparing during login.
 
 - Reading mongoose errors and digging in to them. I initially setup the application model to require "response" property but don't have that as part of the create application form because that is something the user will add later when the edit their application info. Had to remove required in the schema.
+
+- Deploying the front end on https required configuring the cookies differently.
