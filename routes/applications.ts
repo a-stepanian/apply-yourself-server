@@ -18,7 +18,8 @@ applicationRoutes.get("/applications", async (req: Request, res: Response, next:
     next(err);
   }
 });
-// Get a single application
+
+// Get application by id
 applicationRoutes.get("/applications/:id", async (req: Request, res: Response, next: Function) => {
   try {
     const result = await Application.findOne({ _id: new ObjectId(req.params.id) });
