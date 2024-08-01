@@ -21,8 +21,10 @@ const jobSchema = new Schema({
   levels: { type: [LevelSchema] },
   locations: { type: [LocationSchema] },
   model_type: { type: String },
+  name: { type: String },
   publication_date: { type: String },
   refs: { type: LandingPageSchema },
+  short_name: { type: String },
   tags: { type: [] },
   type: { type: String }
 });
@@ -32,7 +34,7 @@ const jobPageSchema = new Schema({
   items_per_page: { type: Number },
   page: { type: Number },
   page_count: { type: Number },
-  results: { type: [jobSchema] },
+  results: { type: [{}] },
   timed_out: { type: Boolean },
   took: { type: Number },
   total: { type: Number }
