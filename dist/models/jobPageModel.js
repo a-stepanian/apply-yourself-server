@@ -5,14 +5,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const Schema = mongoose_1.default.Schema;
-const HasIdSchema = new Schema({ id: { type: Number, required: false } });
-const HasNameSchema = new Schema({ name: { type: String, required: false } });
-const HasShortNameSchema = new Schema({ short_name: { type: String, required: false } });
 const LandingPageSchema = new Schema({ landing_page: { type: String } });
-const CategorySchema = new Schema(Object.assign({}, HasNameSchema));
-const LocationSchema = new Schema(Object.assign({}, HasNameSchema));
-const LevelSchema = new Schema(Object.assign(Object.assign({}, HasNameSchema), HasShortNameSchema));
-const CompanySchema = new Schema(Object.assign(Object.assign(Object.assign({}, HasIdSchema), HasNameSchema), HasShortNameSchema));
+const CategorySchema = new Schema({ name: { type: String, required: false } });
+const LocationSchema = new Schema({ name: { type: String, required: false } });
+const LevelSchema = new Schema({
+    name: { type: String, required: false },
+    short_name: { type: String, required: false }
+});
+const CompanySchema = new Schema({
+    id: { type: Number, required: false },
+    name: { type: String, required: false },
+    short_name: { type: String, required: false }
+});
 const jobSchema = new Schema({
     categories: { type: [CategorySchema] },
     company: { type: [CompanySchema] },

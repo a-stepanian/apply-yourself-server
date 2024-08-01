@@ -1,14 +1,18 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
-const HasIdSchema = new Schema({ id: { type: Number, required: false } });
-const HasNameSchema = new Schema({ name: { type: String, required: false } });
-const HasShortNameSchema = new Schema({ short_name: { type: String, required: false } });
 const LandingPageSchema = new Schema({ landing_page: { type: String } });
-const CategorySchema = new Schema({ ...HasNameSchema });
-const LocationSchema = new Schema({ ...HasNameSchema });
-const LevelSchema = new Schema({ ...HasNameSchema, ...HasShortNameSchema });
-const CompanySchema = new Schema({ ...HasIdSchema, ...HasNameSchema, ...HasShortNameSchema });
+const CategorySchema = new Schema({ name: { type: String, required: false } });
+const LocationSchema = new Schema({ name: { type: String, required: false } });
+const LevelSchema = new Schema({
+  name: { type: String, required: false },
+  short_name: { type: String, required: false }
+});
+const CompanySchema = new Schema({
+  id: { type: Number, required: false },
+  name: { type: String, required: false },
+  short_name: { type: String, required: false }
+});
 
 const jobSchema = new Schema({
   categories: { type: [CategorySchema] },
