@@ -32,7 +32,7 @@ const jobPageSchema = new Schema({
   items_per_page: { type: Number },
   page: { type: Number },
   page_count: { type: Number },
-  results: { type: [{}] },
+  results: { type: [jobSchema] },
   timed_out: { type: Boolean },
   took: { type: Number },
   total: { type: Number }
