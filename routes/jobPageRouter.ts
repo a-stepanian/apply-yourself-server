@@ -4,7 +4,7 @@ const router = express.Router();
 import JobPage from "../models/jobPageModel";
 
 // CREATE NEW JOBPAGE
-router.post("/", async (req: IRequestWithUser, res: Response) => {
+router.post("/new", async (req: IRequestWithUser, res: Response) => {
   try {
     // get mongodb _id from user (added to req object from cookie in auth middleware)
     const user = req.user;
