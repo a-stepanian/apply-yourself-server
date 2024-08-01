@@ -5,6 +5,7 @@ import cors from "cors";
 import userRouter from "./routes/userRouter";
 import applicationRouter from "./routes/applicationRouter";
 import mongoose from "mongoose";
+import jobPageRouter from "./routes/jobPageRouter";
 
 dotenv.config({ path: "./config.env" });
 
@@ -32,6 +33,7 @@ app.use(
 // Add Routing
 app.use("/auth", userRouter);
 app.use("/applications", applicationRouter);
+app.use("/job-pages", jobPageRouter);
 
 // Serve app
 const port: number = parseInt(process.env.PORT || "5000", 10);
