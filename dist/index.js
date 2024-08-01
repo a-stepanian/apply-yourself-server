@@ -11,6 +11,7 @@ const cors_1 = __importDefault(require("cors"));
 const userRouter_1 = __importDefault(require("./routes/userRouter"));
 const applicationRouter_1 = __importDefault(require("./routes/applicationRouter"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const jobPageRouter_1 = __importDefault(require("./routes/jobPageRouter"));
 dotenv_1.default.config({ path: "./config.env" });
 // Connect to DB
 mongoose_1.default
@@ -32,6 +33,7 @@ app.use((0, cors_1.default)({
 // Add Routing
 app.use("/auth", userRouter_1.default);
 app.use("/applications", applicationRouter_1.default);
+app.use("/job-pages", jobPageRouter_1.default);
 // Serve app
 const port = parseInt(process.env.PORT || "5000", 10);
 app.listen(port, () => {

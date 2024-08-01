@@ -15,78 +15,78 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongodb_1 = require("mongodb");
 const error_1 = require("../middleware/error");
-const applicationModel_1 = __importDefault(require("../models/applicationModel"));
+const jobPageModel_1 = __importDefault(require("../models/jobPageModel"));
 // Create an instance of the Router
-const applicationRoutes = express_1.default.Router();
+const jobPageRoutes = express_1.default.Router();
 // Use Error handling middleware
-applicationRoutes.use(error_1.errorHandler);
-// Get all applications
-applicationRoutes.get("/applications", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+jobPageRoutes.use(error_1.errorHandler);
+// Get all jobPages
+jobPageRoutes.get("/job-pages", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield applicationModel_1.default.find();
+        const result = yield jobPageModel_1.default.find();
         res.send(result);
     }
     catch (err) {
         next(err);
     }
 }));
-// Get application by id
-applicationRoutes.get("/applications/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+// Get jobPage by id
+jobPageRoutes.get("/job-pages/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield applicationModel_1.default.findOne({ _id: new mongodb_1.ObjectId(req.params.id) });
+        const result = yield jobPageModel_1.default.findOne({ _id: new mongodb_1.ObjectId(req.params.id) });
         if (result) {
             res.send(result);
         }
         else {
-            res.status(404).send("Application not found");
+            res.status(404).send("JobPage not found");
         }
     }
     catch (err) {
         next(err);
     }
 }));
-// Create a new application
-applicationRoutes.post("/applications/new", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+// Create a new jobPage
+jobPageRoutes.post("/job-pages/new", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newApplication = new applicationModel_1.default(Object.assign({}, req.body));
-        const result = yield newApplication.save();
+        const newJobPage = new jobPageModel_1.default(Object.assign({}, req.body));
+        const result = yield newJobPage.save();
         res.send(result);
     }
     catch (err) {
         next(err);
     }
 }));
-// Update an application
-applicationRoutes.put("/applications/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+// Update an jobPage
+jobPageRoutes.put("/job-pages/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newValues = {
             $set: Object.assign({}, req.body)
         };
-        const result = yield applicationModel_1.default.findByIdAndUpdate(new mongodb_1.ObjectId(req.params.id), newValues);
+        const result = yield jobPageModel_1.default.findByIdAndUpdate(new mongodb_1.ObjectId(req.params.id), newValues);
         if (result) {
             res.send(result);
         }
         else {
-            res.status(404).send("Application not found");
+            res.status(404).send("JobPage not found");
         }
     }
     catch (err) {
         next(err);
     }
 }));
-// Delete an application
-applicationRoutes.delete("/applications/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+// Delete an jobPage
+jobPageRoutes.delete("/job-pages/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield applicationModel_1.default.findByIdAndDelete(req.params.id);
+        const result = yield jobPageModel_1.default.findByIdAndDelete(req.params.id);
         if (result) {
             res.send(result);
         }
         else {
-            res.status(404).send("Application not found");
+            res.status(404).send("JobPage not found");
         }
     }
     catch (err) {
         next(err);
     }
 }));
-exports.default = applicationRoutes;
+exports.default = jobPageRoutes;

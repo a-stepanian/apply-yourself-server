@@ -1,6 +1,5 @@
-import { Request, Response } from "express";
+import express, { Request, Response } from "express";
 import { IRequestWithUser } from "../middleware/auth";
-import express from "express";
 const router = express.Router();
 import JobPage from "../models/jobPageModel";
 import auth from "../middleware/auth";
@@ -35,6 +34,7 @@ router.post("/", auth, async (req: IRequestWithUser, res: Response) => {
 // GET ALL JOBPAGES
 router.get("/", auth, async (req: Request, res: Response) => {
   try {
+    console.log("TEST");
     const foundJobPages = await JobPage.find({});
     res.json(foundJobPages);
   } catch (err) {
