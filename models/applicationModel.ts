@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const applicationSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "User"
   },
   company: { type: String, required: true },
   position: { type: String, required: true },
@@ -13,9 +13,9 @@ const applicationSchema = new Schema({
   applied: { type: String, required: true },
   response: { type: String },
   comments: { type: String },
-  status: { type: String, required: true },
+  status: { type: String, required: true }
 });
 
 const Application = mongoose.model("application", applicationSchema);
 
-module.exports = Application;
+export default Application;

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Or "ESNext" if you need more recent features
+    "module": "CommonJS", // Use CommonJS for Node.js compatibility
+    "moduleResolution": "node", // Common setting for Node.js projects
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true, // This should skip lib type checks
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["middleware/**/*.ts", "db/**/*.ts", "routes/**/*.ts", "models/**/*.ts", "index.ts"],
+  "exclude": ["node_modules", "dist"]
+}
