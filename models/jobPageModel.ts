@@ -2,16 +2,16 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const LandingPageSchema = new Schema({ landing_page: { type: String } });
-const CategorySchema = new Schema({ name: { type: String, required: false } });
-const LocationSchema = new Schema({ name: { type: String, required: false } });
+const CategorySchema = new Schema({ name: { type: String } });
+const LocationSchema = new Schema({ name: { type: String } });
 const LevelSchema = new Schema({
-  name: { type: String, required: false },
-  short_name: { type: String, required: false }
+  name: { type: String },
+  short_name: { type: String }
 });
 const CompanySchema = new Schema({
-  id: { type: Number, required: false },
-  name: { type: String, required: false },
-  short_name: { type: String, required: false }
+  id: { type: Number },
+  name: { type: String },
+  short_name: { type: String }
 });
 
 const jobSchema = new Schema({
@@ -28,14 +28,14 @@ const jobSchema = new Schema({
 });
 
 const jobPageSchema = new Schema({
-  aggregations: { type: {}, required: false },
-  items_per_page: { type: Number, required: true },
-  page: { type: Number, required: true },
-  page_count: { type: Number, required: true },
-  results: { type: [jobSchema], required: true },
-  timed_out: { type: Boolean, required: true },
-  took: { type: Number, required: true },
-  total: { type: Number, required: true }
+  aggregations: { type: {} },
+  items_per_page: { type: Number },
+  page: { type: Number },
+  page_count: { type: Number },
+  results: { type: [{}] },
+  timed_out: { type: Boolean },
+  took: { type: Number },
+  total: { type: Number }
 });
 
 const JobPage = mongoose.model("jobPage", jobPageSchema);
