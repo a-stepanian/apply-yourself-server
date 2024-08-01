@@ -2,10 +2,9 @@ import express, { Request, Response } from "express";
 import { IRequestWithUser } from "../middleware/auth";
 const router = express.Router();
 import JobPage from "../models/jobPageModel";
-import auth from "../middleware/auth";
 
 // CREATE NEW JOBPAGE
-router.post("/", auth, async (req: IRequestWithUser, res: Response) => {
+router.post("/", async (req: IRequestWithUser, res: Response) => {
   try {
     // get mongodb _id from user (added to req object from cookie in auth middleware)
     const user = req.user;
@@ -32,7 +31,7 @@ router.post("/", auth, async (req: IRequestWithUser, res: Response) => {
 });
 
 // GET ALL JOBPAGES
-router.get("/", auth, async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     console.log("TEST");
     const foundJobPages = await JobPage.find({});
@@ -44,7 +43,7 @@ router.get("/", auth, async (req: Request, res: Response) => {
 });
 
 // GET JOBPAGE BY PAGE NUMBER
-router.get("/:pageNumber", auth, async (req: Request, res: Response) => {
+router.get("/:pageNumber", async (req: Request, res: Response) => {
   const { pageNumber } = req.params;
   try {
     const foundJobPage = await JobPage.findOne({ page: pageNumber });
