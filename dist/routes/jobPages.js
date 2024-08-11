@@ -90,3 +90,4 @@ jobPageRoutes.delete("/job-pages/:id", (req, res, next) => __awaiter(void 0, voi
     }
 }));
 exports.default = jobPageRoutes;
+//# sourceMappingURL=jobPages.js.map

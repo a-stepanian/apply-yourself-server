@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import { IRequestWithUser } from "../middleware/auth";
 import express from "express";
-const router = express.Router();
 import User from "../models/userModel";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import auth from "../middleware/auth";
 
-// Create User
-router.post("/", async (req: Request, res: Response) => {
+export const userRouter = express.Router();
+
+// Create user
+userRouter.post("/", async (req: Request, res: Response) => {
   try {
     const { username, email, password, passwordVerify } = req.body;
     // Validate user input
@@ -70,10 +71,8 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
-//-------------------
-// LOG IN USER
-//-------------------
-router.post("/login", async (req: Request, res: Response) => {
+// Log in user
+userRouter.post("/login", async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
@@ -109,10 +108,8 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-//-------------------
-// LOG OUT USER
-//-------------------
-router.get("/logout", (req: Request, res: Response) => {
+// Log out user
+userRouter.get("/logout", (req: Request, res: Response) => {
   //  Set token to empty string and make it expired
   res
     .cookie("token", "", {
@@ -124,10 +121,8 @@ router.get("/logout", (req: Request, res: Response) => {
     .send();
 });
 
-//-------------------
 // VERIFY USER HAS TOKEN AND SECRET MATCHES
-//-------------------
-router.get("/loggedIn", (req: Request, res: Response) => {
+userRouter.get("/loggedIn", (req: Request, res: Response) => {
   try {
     const token = req.cookies.token;
     if (!token) return res.json(false);
@@ -140,10 +135,8 @@ router.get("/loggedIn", (req: Request, res: Response) => {
   }
 });
 
-//-------------------
-// GET SINGLE USER
-//-------------------
-router.get("/", auth, async (req: IRequestWithUser, res: Response) => {
+// Get user by id (id in req obj)
+userRouter.get("/", auth, async (req: IRequestWithUser, res: Response) => {
   const id = req.user;
   try {
     const foundUser = await User.findById(id);
@@ -154,5 +147,3 @@ router.get("/", auth, async (req: IRequestWithUser, res: Response) => {
     res.status(500).send();
   }
 });
-
-export default router;

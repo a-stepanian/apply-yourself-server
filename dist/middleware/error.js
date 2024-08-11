@@ -9,3 +9,4 @@ function errorHandler(err, req, res, next) {
         res.status(500).send("An unknown error occurred");
     }
 }
+//# sourceMappingURL=error.js.map

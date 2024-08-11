@@ -27,3 +27,4 @@ function auth(req, res, next) {
     }
 }
 exports.default = auth;
+//# sourceMappingURL=auth.js.map

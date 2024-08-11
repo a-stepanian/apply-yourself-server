@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.jobPageRouter = void 0;
 const express_1 = __importDefault(require("express"));
-const router = express_1.default.Router();
 const jobPageModel_1 = __importDefault(require("../models/jobPageModel"));
-const auth_1 = __importDefault(require("../middleware/auth"));
+exports.jobPageRouter = express_1.default.Router();
 // CREATE NEW JOBPAGE
-router.post("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.jobPageRouter.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // get mongodb _id from user (added to req object from cookie in auth middleware)
         const user = req.user;
@@ -43,33 +43,24 @@ router.post("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0,
         res.status(500).send();
     }
 }));
-// GET ALL JOBPAGES
-router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        console.log("TEST");
-        const foundJobPages = yield jobPageModel_1.default.find({});
-        res.json(foundJobPages);
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}));
 // GET JOBPAGE BY PAGE NUMBER
-router.get("/:pageNumber", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.jobPageRouter.get("/:pageNumber", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { pageNumber } = req.params;
     try {
-        const foundJobPage = yield jobPageModel_1.default.findOne({ page: pageNumber });
+        const query = {}; // Initialize an empty query object
+        if (pageNumber)
+            query.page = pageNumber;
+        const foundJobPage = yield jobPageModel_1.default.findOne(query).populate("results").exec();
         if (foundJobPage) {
-            res.send(foundJobPage);
+            res.json(foundJobPage);
         }
         else {
+            res.status(404).send("Job page not found");
         }
-        res.json(foundJobPage);
     }
     catch (err) {
         console.error(err);
-        res.status(500).send();
+        res.status(500).send("Internal Server Error");
     }
 }));
-exports.default = router;
+//# sourceMappingURL=jobPageRouter.js.map

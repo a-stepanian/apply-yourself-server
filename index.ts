@@ -1,11 +1,12 @@
 import express, { Express } from "express";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
 import cors from "cors";
-import userRouter from "./routes/userRouter";
-import applicationRouter from "./routes/applicationRouter";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
-import jobPageRouter from "./routes/jobPageRouter";
+import cookieParser from "cookie-parser";
+import { userRouter } from "./routes/userRouter";
+import { applicationRouter } from "./routes/applicationRouter";
+import { jobPageRouter } from "./routes/jobPageRouter";
+import { jobRouter } from "./routes/jobRouter";
 
 dotenv.config({ path: "./config.env" });
 
@@ -33,8 +34,9 @@ app.use(
 
 // Add Routing
 app.use("/auth", userRouter);
-app.use("/applications", applicationRouter);
+app.use("/job", jobRouter);
 app.use("/job-pages", jobPageRouter);
+app.use("/applications", applicationRouter);
 
 // Serve app
 const port: number = parseInt(process.env.PORT || "5000", 10);

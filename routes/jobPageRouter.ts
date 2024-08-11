@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
 import { IRequestWithUser } from "../middleware/auth";
-const router = express.Router();
 import JobPage from "../models/jobPageModel";
 
+export const jobPageRouter = express.Router();
+
 // CREATE NEW JOBPAGE
-router.post("/new", async (req: IRequestWithUser, res: Response) => {
+jobPageRouter.post("/new", async (req: IRequestWithUser, res: Response) => {
   try {
     // get mongodb _id from user (added to req object from cookie in auth middleware)
     const user = req.user;
@@ -30,32 +31,22 @@ router.post("/new", async (req: IRequestWithUser, res: Response) => {
   }
 });
 
-// GET ALL JOBPAGES
-router.get("/", async (req: Request, res: Response) => {
-  try {
-    console.log("TEST");
-    const foundJobPages = await JobPage.find({});
-    res.json(foundJobPages);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send();
-  }
-});
-
 // GET JOBPAGE BY PAGE NUMBER
-router.get("/:pageNumber", async (req: Request, res: Response) => {
+jobPageRouter.get("/:pageNumber", async (req: Request, res: Response) => {
   const { pageNumber } = req.params;
   try {
-    const foundJobPage = await JobPage.findOne({ page: pageNumber });
+    const query: any = {}; // Initialize an empty query object
+    if (pageNumber) query.page = pageNumber;
+
+    const foundJobPage = await JobPage.findOne(query).populate("results").exec();
+
     if (foundJobPage) {
-      res.send(foundJobPage);
+      res.json(foundJobPage);
     } else {
+      res.status(404).send("Job page not found");
     }
-    res.json(foundJobPage);
   } catch (err) {
     console.error(err);
-    res.status(500).send();
+    res.status(500).send("Internal Server Error");
   }
 });
-
-export default router;

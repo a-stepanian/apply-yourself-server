@@ -10,14 +10,15 @@ const applicationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    company: { type: String, required: true },
-    position: { type: String, required: true },
-    website: { type: String, required: true },
-    location: { type: String, required: true },
-    applied: { type: String, required: true },
+    company: { type: String },
+    position: { type: String },
+    website: { type: String },
+    location: { type: String },
+    applied: { type: String },
     response: { type: String },
     comments: { type: String },
-    status: { type: String, required: true }
+    status: { type: String }
 });
 const Application = mongoose_1.default.model("application", applicationSchema);
 exports.default = Application;
+//# sourceMappingURL=applicationModel.js.map

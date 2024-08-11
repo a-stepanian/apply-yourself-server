@@ -90,3 +90,4 @@ applicationRoutes.delete("/applications/:id", (req, res, next) => __awaiter(void
     }
 }));
 exports.default = applicationRoutes;
+//# sourceMappingURL=applications.js.map

@@ -12,14 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRouter = void 0;
 const express_1 = __importDefault(require("express"));
-const router = express_1.default.Router();
 const userModel_1 = __importDefault(require("../models/userModel"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const auth_1 = __importDefault(require("../middleware/auth"));
-// Create User
-router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.userRouter = express_1.default.Router();
+// Create user
+exports.userRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const { username, email, password, passwordVerify } = req.body;
@@ -78,10 +79,8 @@ router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).send();
     }
 }));
-//-------------------
-// LOG IN USER
-//-------------------
-router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Log in user
+exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const { username, password } = req.body;
@@ -115,10 +114,8 @@ router.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).send();
     }
 }));
-//-------------------
-// LOG OUT USER
-//-------------------
-router.get("/logout", (req, res) => {
+// Log out user
+exports.userRouter.get("/logout", (req, res) => {
     //  Set token to empty string and make it expired
     res
         .cookie("token", "", {
@@ -129,10 +126,8 @@ router.get("/logout", (req, res) => {
     })
         .send();
 });
-//-------------------
 // VERIFY USER HAS TOKEN AND SECRET MATCHES
-//-------------------
-router.get("/loggedIn", (req, res) => {
+exports.userRouter.get("/loggedIn", (req, res) => {
     var _a;
     try {
         const token = req.cookies.token;
@@ -145,10 +140,8 @@ router.get("/loggedIn", (req, res) => {
         res.json(false);
     }
 });
-//-------------------
-// GET SINGLE USER
-//-------------------
-router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Get user by id (id in req obj)
+exports.userRouter.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const id = req.user;
     try {
@@ -161,4 +154,4 @@ router.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, 
         res.status(500).send();
     }
 }));
-exports.default = router;
+//# sourceMappingURL=userRouter.js.map
