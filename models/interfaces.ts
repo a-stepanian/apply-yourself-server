@@ -8,6 +8,9 @@ export interface ICategory {
   name: string;
 }
 
+export interface IIndustry {
+  name: string;
+}
 export interface ILocation {
   name: string;
 }
@@ -21,6 +24,15 @@ export interface ICompany {
   id: number;
   name: string;
   short_name: string;
+  description?: string;
+  locations?: ILocation[];
+  industries?: IIndustry[];
+  tags?: any[];
+  publication_date?: string;
+  model_type?: string;
+  twitter?: any;
+  size?: ILevel;
+  refs?: any;
 }
 
 export interface IJob extends Document {

@@ -55,7 +55,20 @@ exports.jobPageRouter.get("/:pageNumber", (req, res) => __awaiter(void 0, void 0
             res.json(foundJobPage);
         }
         else {
-            res.status(404).send("Job page not found");
+            try {
+                const response = yield fetch(`https://www.themuse.com/api/public/jobs?page=${pageNumber}`); // second try the API
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                console.log(response);
+                const newJobPage = new jobPageModel_1.default(Object.assign({}, response.body));
+                yield newJobPage.save();
+                const data = yield response.json();
+                res.send(data);
+            }
+            catch (error) {
+                res.status(404).send("Job page not found.");
+            }
         }
     }
     catch (err) {

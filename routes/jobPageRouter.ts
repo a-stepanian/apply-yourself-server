@@ -43,7 +43,20 @@ jobPageRouter.get("/:pageNumber", async (req: Request, res: Response) => {
     if (foundJobPage) {
       res.json(foundJobPage);
     } else {
-      res.status(404).send("Job page not found");
+      try {
+        const response = await fetch(`https://www.themuse.com/api/public/jobs?page=${pageNumber}`); // second try the API
+        if (!response.ok) {
+          res.status(404).send("Job page not found on the API.");
+        }
+        const newJobPage = new JobPage({
+          ...response.body
+        });
+        await newJobPage.save();
+        const data = await response.json();
+        res.send(data);
+      } catch (error) {
+        res.status(404).send("Job page not found.");
+      }
     }
   } catch (err) {
     console.error(err);
