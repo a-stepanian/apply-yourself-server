@@ -7,6 +7,8 @@ import { userRouter } from "./routes/userRouter";
 import { applicationRouter } from "./routes/applicationRouter";
 import { jobPageRouter } from "./routes/jobPageRouter";
 import { jobRouter } from "./routes/jobRouter";
+import { companyRouter } from "./routes/companyRouter";
+import { companyPageRouter } from "./routes/companyPageRouter";
 
 dotenv.config({ path: "./config.env" });
 
@@ -34,6 +36,8 @@ app.use(
 
 // Add Routing
 app.use("/auth", userRouter);
+app.use("/company", companyRouter);
+app.use("/company-pages", companyPageRouter);
 app.use("/job", jobRouter);
 app.use("/job-pages", jobPageRouter);
 app.use("/applications", applicationRouter);

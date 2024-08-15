@@ -4,29 +4,21 @@ export interface ILandingPage {
   landing_page: string;
 }
 
-export interface ICategory {
+export interface IHasName {
   name: string;
 }
 
-export interface IIndustry {
-  name: string;
-}
-export interface ILocation {
-  name: string;
-}
-
-export interface ILevel {
-  name: string;
+export interface ILevel extends IHasName {
   short_name: string;
 }
 
-export interface ICompany {
+export interface ICompany extends Document {
   id: number;
   name: string;
   short_name: string;
   description?: string;
-  locations?: ILocation[];
-  industries?: IIndustry[];
+  locations?: IHasName[];
+  industries?: IHasName[];
   tags?: any[];
   publication_date?: string;
   model_type?: string;
@@ -36,11 +28,11 @@ export interface ICompany {
 }
 
 export interface IJob extends Document {
-  categories: ICategory[];
+  categories: IHasName[];
   company: ICompany[];
   contents: string;
   levels: ILevel[];
-  locations: ILocation[];
+  locations: IHasName[];
   model_type: string;
   name: string;
   publication_date: string;

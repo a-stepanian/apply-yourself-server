@@ -9,12 +9,12 @@ const companySchema = new Schema<ICompany>({
   description: { type: String },
   locations: [{ name: { type: String } }],
   industries: [{ name: { type: String } }],
-  tags: [{ type: Schema.Types.Mixed }],
-  publication_date: { type: String },
   model_type: { type: String },
+  publication_date: { type: String },
+  tags: [{ type: Schema.Types.Mixed }],
   twitter: { type: Schema.Types.Mixed },
-  size: { name: { type: String }, short_name: { type: String } },
-  refs: { type: Schema.Types.Mixed }
+  refs: { type: Schema.Types.Mixed },
+  size: { type: Schema.Types.Mixed }
 });
 
 const Company = mongoose.model("company", companySchema);

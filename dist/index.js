@@ -13,6 +13,8 @@ const userRouter_1 = require("./routes/userRouter");
 const applicationRouter_1 = require("./routes/applicationRouter");
 const jobPageRouter_1 = require("./routes/jobPageRouter");
 const jobRouter_1 = require("./routes/jobRouter");
+const companyRouter_1 = require("./routes/companyRouter");
+const companyPageRouter_1 = require("./routes/companyPageRouter");
 dotenv_1.default.config({ path: "./config.env" });
 // Connect to DB
 mongoose_1.default
@@ -34,6 +36,8 @@ app.use((0, cors_1.default)({
 }));
 // Add Routing
 app.use("/auth", userRouter_1.userRouter);
+app.use("/company", companyRouter_1.companyRouter);
+app.use("/company-pages", companyPageRouter_1.companyPageRouter);
 app.use("/job", jobRouter_1.jobRouter);
 app.use("/job-pages", jobPageRouter_1.jobPageRouter);
 app.use("/applications", applicationRouter_1.applicationRouter);
