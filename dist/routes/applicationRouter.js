@@ -22,17 +22,22 @@ const jobModel_1 = __importDefault(require("../models/jobModel"));
 exports.applicationRouter = express_1.default.Router();
 // CREATE NEW APPLICATION
 exports.applicationRouter.post("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const userId = req.user;
     const { jobId, applied, response, comments, status } = req.body;
     try {
         const job = yield jobModel_1.default.findById(jobId);
-        if (!job || !job.company) {
+        if (!((_a = job === null || job === void 0 ? void 0 : job.company[0]) === null || _a === void 0 ? void 0 : _a.name)) {
             return res.status(400).json({ message: "applicationRouter Error: job or job.company not found" });
         }
-        const company = yield companyModel_1.default.findOne({ name: job.company });
+        console.log("******************************job**************************************");
+        console.log(job);
+        const company = yield companyModel_1.default.findOne({ name: job.company[0].name });
         if (!company) {
             return res.status(400).json({ message: "applicationRouter Error: company not found" });
         }
+        console.log("******************************company**************************************");
+        console.log(company);
         const newApplication = new applicationModel_1.default({
             user: userId,
             company: company._id,

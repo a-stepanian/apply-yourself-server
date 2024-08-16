@@ -9,6 +9,20 @@ export const companyRouter = express.Router();
 // Use Error handling middleware
 companyRouter.use(errorHandler);
 
+// Get all company records
+companyRouter.get("/", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const allCompanies = await Company.find();
+    if (allCompanies) {
+      res.json(allCompanies);
+    } else {
+      res.status(404).send("Company not found");
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Get company by ID
 companyRouter.get("/:id", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {

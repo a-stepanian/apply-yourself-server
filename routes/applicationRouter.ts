@@ -16,14 +16,17 @@ applicationRouter.post("/", auth, async (req: IRequestWithUser, res: Response) =
 
   try {
     const job = await Job.findById(jobId);
-    if (!job || !job.company) {
+    if (!job?.company[0]?.name) {
       return res.status(400).json({ message: "applicationRouter Error: job or job.company not found" });
     }
-
-    const company = await Company.findOne({ name: job.company });
+    console.log("******************************job**************************************");
+    console.log(job);
+    const company = await Company.findOne({ name: job.company[0].name });
     if (!company) {
       return res.status(400).json({ message: "applicationRouter Error: company not found" });
     }
+    console.log("******************************company**************************************");
+    console.log(company);
 
     const newApplication = new Application({
       user: userId,

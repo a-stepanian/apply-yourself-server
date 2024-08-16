@@ -20,6 +20,21 @@ const error_1 = require("../middleware/error");
 exports.companyRouter = express_1.default.Router();
 // Use Error handling middleware
 exports.companyRouter.use(error_1.errorHandler);
+// Get all company records
+exports.companyRouter.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const allCompanies = yield companyModel_1.default.find();
+        if (allCompanies) {
+            res.json(allCompanies);
+        }
+        else {
+            res.status(404).send("Company not found");
+        }
+    }
+    catch (err) {
+        next(err);
+    }
+}));
 // Get company by ID
 exports.companyRouter.get("/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
