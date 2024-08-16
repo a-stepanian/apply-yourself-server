@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.companyPageRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const companyPageModel_1 = require("../models/companyPageModel");
+const companyModel_1 = __importDefault(require("../models/companyModel"));
 exports.companyPageRouter = express_1.default.Router();
 // CREATE NEW JOBPAGE
 exports.companyPageRouter.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,25 +46,34 @@ exports.companyPageRouter.post("/new", (req, res) => __awaiter(void 0, void 0, v
 }));
 // GET JOBPAGE BY PAGE NUMBER
 exports.companyPageRouter.get("/:pageNumber", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
     const { pageNumber } = req.params;
     try {
-        const query = {}; // Initialize an empty query object
-        if (pageNumber)
-            query.page = pageNumber;
-        const foundCompanyPage = yield companyPageModel_1.CompanyPage.findOne(query).populate("results").exec();
+        const foundCompanyPage = yield ((_b = (_a = companyPageModel_1.CompanyPage.findOne({ page: pageNumber })) === null || _a === void 0 ? void 0 : _a.populate("results")) === null || _b === void 0 ? void 0 : _b.exec());
         if (foundCompanyPage) {
             res.json(foundCompanyPage);
         }
         else {
+            // second try the API
             try {
-                const response = yield fetch(`https://www.themuse.com/api/public/companies?page=${pageNumber}`); // second try the API
+                const response = yield fetch(`https://www.themuse.com/api/public/companies?page=${pageNumber}`);
                 if (!response.ok) {
                     res.status(404).send("Company page not found on the API.");
                 }
-                const newCompanyPage = new companyPageModel_1.CompanyPage(Object.assign({}, response.body));
-                yield newCompanyPage.save();
-                const data = yield response.json();
-                res.send(data);
+                let data = yield response.json();
+                if (((_c = data === null || data === void 0 ? void 0 : data.results) === null || _c === void 0 ? void 0 : _c.length) > 0) {
+                    const newCompanyIds = data.results.map((x) => __awaiter(void 0, void 0, void 0, function* () {
+                        const newCompany = new companyModel_1.default(x);
+                        const newCompanyResult = yield newCompany.save();
+                        return newCompanyResult._id;
+                    }));
+                    const allNewCompanyIds = yield Promise.all(newCompanyIds);
+                    console.log(allNewCompanyIds);
+                    const newCompanyPage = new companyPageModel_1.CompanyPage(Object.assign(Object.assign({}, data), { results: allNewCompanyIds, localRecord: true }));
+                    yield newCompanyPage.save();
+                    data = yield response.json();
+                    res.send(data);
+                }
             }
             catch (error) {
                 res.status(404).send("Company page not found.");

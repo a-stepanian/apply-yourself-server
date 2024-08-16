@@ -107,7 +107,7 @@ exports.userRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
             secure: true,
             sameSite: "none"
         })
-            .send();
+            .send("User is authenticated.");
     }
     catch (err) {
         console.error(err);
@@ -144,14 +144,16 @@ exports.userRouter.get("/loggedIn", (req, res) => {
 exports.userRouter.get("/", auth_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const id = req.user;
-    try {
-        const foundUser = yield userModel_1.default.findById(id);
-        const justTheName = { username: (_a = foundUser === null || foundUser === void 0 ? void 0 : foundUser.username) !== null && _a !== void 0 ? _a : "" };
-        res.json(justTheName);
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
+    if (id) {
+        try {
+            const foundUser = yield userModel_1.default.findById(id);
+            const justTheName = { username: (_a = foundUser === null || foundUser === void 0 ? void 0 : foundUser.username) !== null && _a !== void 0 ? _a : "" };
+            res.json(justTheName);
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).send();
+        }
     }
 }));
 //# sourceMappingURL=userRouter.js.map

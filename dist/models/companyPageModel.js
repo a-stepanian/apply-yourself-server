@@ -15,7 +15,8 @@ const companyPageSchema = new Schema({
     results: [{ type: Schema.Types.ObjectId, ref: companyModel_1.default }],
     timed_out: { type: Boolean },
     took: { type: Number },
-    total: { type: Number }
+    total: { type: Number },
+    localRecord: { type: Boolean }
 });
 exports.CompanyPage = mongoose_1.default.model("companyPage", companyPageSchema);
 //# sourceMappingURL=companyPageModel.js.map

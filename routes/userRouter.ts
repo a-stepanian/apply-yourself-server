@@ -101,7 +101,7 @@ userRouter.post("/login", async (req: Request, res: Response) => {
         secure: true,
         sameSite: "none"
       })
-      .send();
+      .send("User is authenticated.");
   } catch (err) {
     console.error(err);
     res.status(500).send();
@@ -138,12 +138,14 @@ userRouter.get("/loggedIn", (req: Request, res: Response) => {
 // Get user by id (id in req obj)
 userRouter.get("/", auth, async (req: IRequestWithUser, res: Response) => {
   const id = req.user;
-  try {
-    const foundUser = await User.findById(id);
-    const justTheName = { username: foundUser?.username ?? "" };
-    res.json(justTheName);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send();
+  if (id) {
+    try {
+      const foundUser = await User.findById(id);
+      const justTheName = { username: foundUser?.username ?? "" };
+      res.json(justTheName);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send();
+    }
   }
 });

@@ -6,10 +6,14 @@ const applicationSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User"
   },
-  company: { type: String },
-  position: { type: String },
-  website: { type: String },
-  location: { type: String },
+  company: {
+    type: Schema.Types.ObjectId,
+    ref: "Company"
+  },
+  job: {
+    type: Schema.Types.ObjectId,
+    ref: "Job"
+  },
   applied: { type: String },
   response: { type: String },
   comments: { type: String },

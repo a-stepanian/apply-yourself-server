@@ -10,7 +10,8 @@ const companyPageSchema = new Schema({
   results: [{ type: Schema.Types.ObjectId, ref: Company }],
   timed_out: { type: Boolean },
   took: { type: Number },
-  total: { type: Number }
+  total: { type: Number },
+  localRecord: { type: Boolean }
 });
 
 export const CompanyPage = mongoose.model("companyPage", companyPageSchema);

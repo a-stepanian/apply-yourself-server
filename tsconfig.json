@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES6", // Or "ESNext" if you need more recent features
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "module": "CommonJS", // Use CommonJS for Node.js compatibility
     "moduleResolution": "node", // Common setting for Node.js projects
+    "noFallthroughCasesInSwitch": true, // Report errors for fallthrough cases in switch statement
     "outDir": "./dist",
     "rootDir": "./",
-    "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true, // This should skip lib type checks
-    "forceConsistentCasingInFileNames": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES6" // Or "ESNext" if you need more recent features
   },
   "include": ["middleware/**/*.ts", "db/**/*.ts", "routes/**/*.ts", "models/**/*.ts", "index.ts"],
   "exclude": ["node_modules", "dist"]
