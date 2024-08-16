@@ -10,7 +10,8 @@ const jobPageSchema = new Schema({
   results: [{ type: Schema.Types.ObjectId, ref: Job }],
   timed_out: { type: Boolean },
   took: { type: Number },
-  total: { type: Number }
+  total: { type: Number },
+  localRecord: { type: Boolean }
 });
 
 export const JobPage = mongoose.model("jobPage", jobPageSchema);

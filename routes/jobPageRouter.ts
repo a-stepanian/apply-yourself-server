@@ -1,59 +1,40 @@
 import express, { Request, Response } from "express";
-import { IRequestWithUser } from "../middleware/auth";
 import { JobPage } from "../models/jobPageModel";
+import { IJob } from "../models/interfaces";
+import Job from "../models/jobModel";
 
 export const jobPageRouter = express.Router();
 
-// CREATE NEW JOBPAGE
-jobPageRouter.post("/new", async (req: IRequestWithUser, res: Response) => {
-  try {
-    // get mongodb _id from user (added to req object from cookie in auth middleware)
-    const user = req.user;
-    // get remaining properties from req body
-    const { aggregations, items_per_page, page, page_count, results, timed_out, took, total } = req.body;
-    // create new application
-    const newJobPage = new JobPage({
-      aggregations,
-      items_per_page,
-      page,
-      page_count,
-      results,
-      timed_out,
-      took,
-      total
-    });
-    // save to db
-    const savedJobPage = await newJobPage.save();
-    res.json(savedJobPage);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send();
-  }
-});
-
-// GET JOBPAGE BY PAGE NUMBER
+// Get JobPage by Page Number
 jobPageRouter.get("/:pageNumber", async (req: Request, res: Response) => {
   const { pageNumber } = req.params;
   try {
-    const query: any = {}; // Initialize an empty query object
-    if (pageNumber) query.page = pageNumber;
-
-    const foundJobPage = await JobPage.findOne(query).populate("results").exec();
+    const foundJobPage = await JobPage.findOne({ page: pageNumber })?.populate("results")?.exec();
 
     if (foundJobPage) {
       res.json(foundJobPage);
     } else {
       try {
-        const response = await fetch(`https://www.themuse.com/api/public/jobs?page=${pageNumber}`); // second try the API
+        const response = await fetch(`https://www.themuse.com/api/public/jobs?page=${pageNumber}`);
         if (!response.ok) {
           res.status(404).send("Job page not found on the API.");
         }
-        const newJobPage = new JobPage({
-          ...response.body
-        });
-        await newJobPage.save();
-        const data = await response.json();
-        res.send(data);
+        // console.log(response.headers.get("x-ratelimit-remaining"));
+        let data = await response.json();
+
+        if (data?.results?.length > 0) {
+          const newJobIds = data.results.map(async (x: IJob) => {
+            const newJob = new Job(x as IJob);
+            const newJobResult = await newJob.save();
+            return newJobResult._id;
+          });
+
+          const allNewJobIds = await Promise.all(newJobIds);
+          const newJobPage = new JobPage({ ...data, results: allNewJobIds, localRecord: true });
+          await newJobPage.save();
+          data = await response.json();
+          res.send(data);
+        }
       } catch (error) {
         res.status(404).send("Job page not found.");
       }

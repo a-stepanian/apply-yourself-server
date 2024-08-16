@@ -1,39 +1,11 @@
 import express, { Request, Response } from "express";
-import { IRequestWithUser } from "../middleware/auth";
 import { CompanyPage } from "../models/companyPageModel";
 import { ICompany } from "../models/interfaces";
 import Company from "../models/companyModel";
 
 export const companyPageRouter = express.Router();
 
-// CREATE NEW JOBPAGE
-companyPageRouter.post("/new", async (req: IRequestWithUser, res: Response) => {
-  try {
-    // get mongodb _id from user (added to req object from cookie in auth middleware)
-    const user = req.user;
-    // get remaining properties from req body
-    const { aggregations, items_per_page, page, page_count, results, timed_out, took, total } = req.body;
-    // create new application
-    const newCompanyPage = new CompanyPage({
-      aggregations,
-      items_per_page,
-      page,
-      page_count,
-      results,
-      timed_out,
-      took,
-      total
-    });
-    // save to db
-    const savedCompanyPage = await newCompanyPage.save();
-    res.json(savedCompanyPage);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send();
-  }
-});
-
-// GET JOBPAGE BY PAGE NUMBER
+// Get CompanyPage by Page Number
 companyPageRouter.get("/:pageNumber", async (req: Request, res: Response) => {
   const { pageNumber } = req.params;
   try {
@@ -42,7 +14,6 @@ companyPageRouter.get("/:pageNumber", async (req: Request, res: Response) => {
     if (foundCompanyPage) {
       res.json(foundCompanyPage);
     } else {
-      // second try the API
       try {
         const response = await fetch(`https://www.themuse.com/api/public/companies?page=${pageNumber}`);
 
@@ -59,8 +30,6 @@ companyPageRouter.get("/:pageNumber", async (req: Request, res: Response) => {
           });
 
           const allNewCompanyIds = await Promise.all(newCompanyIds);
-          console.log(allNewCompanyIds);
-
           const newCompanyPage = new CompanyPage({ ...data, results: allNewCompanyIds, localRecord: true });
           await newCompanyPage.save();
           data = await response.json();

@@ -15,55 +15,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.jobPageRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const jobPageModel_1 = require("../models/jobPageModel");
+const jobModel_1 = __importDefault(require("../models/jobModel"));
 exports.jobPageRouter = express_1.default.Router();
-// CREATE NEW JOBPAGE
-exports.jobPageRouter.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        // get mongodb _id from user (added to req object from cookie in auth middleware)
-        const user = req.user;
-        // get remaining properties from req body
-        const { aggregations, items_per_page, page, page_count, results, timed_out, took, total } = req.body;
-        // create new application
-        const newJobPage = new jobPageModel_1.JobPage({
-            aggregations,
-            items_per_page,
-            page,
-            page_count,
-            results,
-            timed_out,
-            took,
-            total
-        });
-        // save to db
-        const savedJobPage = yield newJobPage.save();
-        res.json(savedJobPage);
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}));
-// GET JOBPAGE BY PAGE NUMBER
+// Get JobPage by Page Number
 exports.jobPageRouter.get("/:pageNumber", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
     const { pageNumber } = req.params;
     try {
-        const query = {}; // Initialize an empty query object
-        if (pageNumber)
-            query.page = pageNumber;
-        const foundJobPage = yield jobPageModel_1.JobPage.findOne(query).populate("results").exec();
+        const foundJobPage = yield ((_b = (_a = jobPageModel_1.JobPage.findOne({ page: pageNumber })) === null || _a === void 0 ? void 0 : _a.populate("results")) === null || _b === void 0 ? void 0 : _b.exec());
         if (foundJobPage) {
             res.json(foundJobPage);
         }
         else {
             try {
-                const response = yield fetch(`https://www.themuse.com/api/public/jobs?page=${pageNumber}`); // second try the API
+                const response = yield fetch(`https://www.themuse.com/api/public/jobs?page=${pageNumber}`);
                 if (!response.ok) {
                     res.status(404).send("Job page not found on the API.");
                 }
-                const newJobPage = new jobPageModel_1.JobPage(Object.assign({}, response.body));
-                yield newJobPage.save();
-                const data = yield response.json();
-                res.send(data);
+                // console.log(response.headers.get("x-ratelimit-remaining"));
+                let data = yield response.json();
+                if (((_c = data === null || data === void 0 ? void 0 : data.results) === null || _c === void 0 ? void 0 : _c.length) > 0) {
+                    const newJobIds = data.results.map((x) => __awaiter(void 0, void 0, void 0, function* () {
+                        const newJob = new jobModel_1.default(x);
+                        const newJobResult = yield newJob.save();
+                        return newJobResult._id;
+                    }));
+                    const allNewJobIds = yield Promise.all(newJobIds);
+                    const newJobPage = new jobPageModel_1.JobPage(Object.assign(Object.assign({}, data), { results: allNewJobIds, localRecord: true }));
+                    yield newJobPage.save();
+                    data = yield response.json();
+                    res.send(data);
+                }
             }
             catch (error) {
                 res.status(404).send("Job page not found.");

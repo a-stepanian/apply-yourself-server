@@ -17,34 +17,7 @@ const express_1 = __importDefault(require("express"));
 const companyPageModel_1 = require("../models/companyPageModel");
 const companyModel_1 = __importDefault(require("../models/companyModel"));
 exports.companyPageRouter = express_1.default.Router();
-// CREATE NEW JOBPAGE
-exports.companyPageRouter.post("/new", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        // get mongodb _id from user (added to req object from cookie in auth middleware)
-        const user = req.user;
-        // get remaining properties from req body
-        const { aggregations, items_per_page, page, page_count, results, timed_out, took, total } = req.body;
-        // create new application
-        const newCompanyPage = new companyPageModel_1.CompanyPage({
-            aggregations,
-            items_per_page,
-            page,
-            page_count,
-            results,
-            timed_out,
-            took,
-            total
-        });
-        // save to db
-        const savedCompanyPage = yield newCompanyPage.save();
-        res.json(savedCompanyPage);
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).send();
-    }
-}));
-// GET JOBPAGE BY PAGE NUMBER
+// Get CompanyPage by Page Number
 exports.companyPageRouter.get("/:pageNumber", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c;
     const { pageNumber } = req.params;
@@ -54,7 +27,6 @@ exports.companyPageRouter.get("/:pageNumber", (req, res) => __awaiter(void 0, vo
             res.json(foundCompanyPage);
         }
         else {
-            // second try the API
             try {
                 const response = yield fetch(`https://www.themuse.com/api/public/companies?page=${pageNumber}`);
                 if (!response.ok) {
@@ -68,7 +40,6 @@ exports.companyPageRouter.get("/:pageNumber", (req, res) => __awaiter(void 0, vo
                         return newCompanyResult._id;
                     }));
                     const allNewCompanyIds = yield Promise.all(newCompanyIds);
-                    console.log(allNewCompanyIds);
                     const newCompanyPage = new companyPageModel_1.CompanyPage(Object.assign(Object.assign({}, data), { results: allNewCompanyIds, localRecord: true }));
                     yield newCompanyPage.save();
                     data = yield response.json();
