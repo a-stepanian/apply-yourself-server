@@ -13,6 +13,9 @@ const userRouter_1 = require("./routes/userRouter");
 const applicationRouter_1 = require("./routes/applicationRouter");
 const jobRouter_1 = require("./routes/jobRouter");
 const companyRouter_1 = require("./routes/companyRouter");
+const categoryRouter_1 = require("./routes/categoryRouter");
+const industryRouter_1 = require("./routes/industryRouter");
+const locationRouter_1 = require("./routes/locationRouter");
 // import { seedRouter } from "./routes/seedRouter";
 dotenv_1.default.config({ path: "./config.env" });
 // Connect to DB
@@ -35,9 +38,12 @@ app.use((0, cors_1.default)({
 }));
 // Add Routing
 app.use("/auth", userRouter_1.userRouter);
-app.use("/company", companyRouter_1.companyRouter);
-app.use("/job", jobRouter_1.jobRouter);
+app.use("/companies", companyRouter_1.companyRouter);
+app.use("/jobs", jobRouter_1.jobRouter);
 app.use("/applications", applicationRouter_1.applicationRouter);
+app.use("/locations", locationRouter_1.locationRouter);
+app.use("/industries", industryRouter_1.industryRouter);
+app.use("/categories", categoryRouter_1.categoryRouter);
 // app.use("/seed", seedRouter);
 // Serve app
 const port = parseInt(process.env.PORT || "5000", 10);

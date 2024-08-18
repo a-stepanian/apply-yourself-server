@@ -7,6 +7,9 @@ import { userRouter } from "./routes/userRouter";
 import { applicationRouter } from "./routes/applicationRouter";
 import { jobRouter } from "./routes/jobRouter";
 import { companyRouter } from "./routes/companyRouter";
+import { categoryRouter } from "./routes/categoryRouter";
+import { industryRouter } from "./routes/industryRouter";
+import { locationRouter } from "./routes/locationRouter";
 // import { seedRouter } from "./routes/seedRouter";
 
 dotenv.config({ path: "./config.env" });
@@ -35,9 +38,12 @@ app.use(
 
 // Add Routing
 app.use("/auth", userRouter);
-app.use("/company", companyRouter);
-app.use("/job", jobRouter);
+app.use("/companies", companyRouter);
+app.use("/jobs", jobRouter);
 app.use("/applications", applicationRouter);
+app.use("/locations", locationRouter);
+app.use("/industries", industryRouter);
+app.use("/categories", categoryRouter);
 // app.use("/seed", seedRouter);
 
 // Serve app
