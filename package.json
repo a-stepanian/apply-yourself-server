@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "npm run build && node dist/index.js",
+    "seedDB": "npm run build && node dist/db/seedCompanies.js",
     "dev": "nodemon src/index.ts"
   },
   "keywords": [],

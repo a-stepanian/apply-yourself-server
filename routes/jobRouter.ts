@@ -9,6 +9,35 @@ export const jobRouter = express.Router();
 // Use Error handling middleware
 jobRouter.use(errorHandler);
 
+jobRouter.get("/", async (req, res) => {
+  try {
+    const searchTerm = (req?.query?.search as string) || "";
+    const limit = 30;
+    const page = Number(req?.query?.page) || 1;
+    const startIndex = (page - 1) * limit;
+
+    const query: Record<string, any> = {};
+
+    if (searchTerm.length > 0) {
+      query.name = { $regex: new RegExp(searchTerm, "i") }; // case-insensitive search
+    }
+
+    const total = await Job.countDocuments(query);
+    const companies = await Job.find(query).skip(startIndex).limit(limit);
+
+    res.json({
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+      data: companies
+    });
+  } catch (error) {
+    console.error("Error fetching companies:", error);
+    res.status(500).json({ error: "An error occurred while fetching companies." });
+  }
+});
+
 // Get job by ID
 jobRouter.get("/:id", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {

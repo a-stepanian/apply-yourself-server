@@ -12,9 +12,9 @@ companyRouter.use(errorHandler);
 companyRouter.get("/", async (req, res) => {
   try {
     const searchTerm = (req?.query?.search as string) || "";
-    const limit = 30;
+    // const limit = 30;
     const page = Number(req?.query?.page) || 1;
-    const startIndex = (page - 1) * limit;
+    const startIndex = page - 1; // * limit;
 
     const query: Record<string, any> = {};
 
@@ -23,13 +23,13 @@ companyRouter.get("/", async (req, res) => {
     }
 
     const total = await Company.countDocuments(query);
-    const companies = await Company.find(query).skip(startIndex).limit(limit);
+    const companies = await Company.find(query).skip(startIndex); // .limit(limit);
 
     res.json({
       page,
-      limit,
+      // limit,
       total,
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(total), // / limit),
       data: companies
     });
   } catch (error) {

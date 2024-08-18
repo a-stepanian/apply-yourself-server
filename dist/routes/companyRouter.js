@@ -24,21 +24,20 @@ exports.companyRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, f
     var _a, _b;
     try {
         const searchTerm = ((_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.search) || "";
-        const limit = 30;
+        // const limit = 30;
         const page = Number((_b = req === null || req === void 0 ? void 0 : req.query) === null || _b === void 0 ? void 0 : _b.page) || 1;
-        const startIndex = (page - 1) * limit;
+        const startIndex = page - 1; // * limit;
         const query = {};
-        // Add search filter only if searchTerm is not empty
         if (searchTerm.length > 0) {
-            query.name = { $regex: new RegExp(searchTerm, "i") }; // Case-insensitive search
+            query.name = { $regex: new RegExp(searchTerm, "i") }; // case-insensitive search
         }
         const total = yield companyModel_1.default.countDocuments(query);
-        const companies = yield companyModel_1.default.find(query).skip(startIndex).limit(limit);
+        const companies = yield companyModel_1.default.find(query).skip(startIndex); // .limit(limit);
         res.json({
             page,
-            limit,
+            // limit,
             total,
-            pages: Math.ceil(total / limit),
+            pages: Math.ceil(total), // / limit),
             data: companies
         });
     }

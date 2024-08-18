@@ -20,6 +20,32 @@ const error_1 = require("../middleware/error");
 exports.jobRouter = express_1.default.Router();
 // Use Error handling middleware
 exports.jobRouter.use(error_1.errorHandler);
+exports.jobRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    try {
+        const searchTerm = ((_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.search) || "";
+        const limit = 30;
+        const page = Number((_b = req === null || req === void 0 ? void 0 : req.query) === null || _b === void 0 ? void 0 : _b.page) || 1;
+        const startIndex = (page - 1) * limit;
+        const query = {};
+        if (searchTerm.length > 0) {
+            query.name = { $regex: new RegExp(searchTerm, "i") }; // case-insensitive search
+        }
+        const total = yield jobModel_1.default.countDocuments(query);
+        const companies = yield jobModel_1.default.find(query).skip(startIndex).limit(limit);
+        res.json({
+            page,
+            limit,
+            total,
+            pages: Math.ceil(total / limit),
+            data: companies
+        });
+    }
+    catch (error) {
+        console.error("Error fetching companies:", error);
+        res.status(500).json({ error: "An error occurred while fetching companies." });
+    }
+}));
 // Get job by ID
 exports.jobRouter.get("/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {

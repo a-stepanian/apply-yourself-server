@@ -14,7 +14,8 @@ const companySchema = new Schema<ICompany>({
   tags: [{ type: Schema.Types.Mixed }],
   twitter: { type: Schema.Types.Mixed },
   refs: { type: Schema.Types.Mixed },
-  size: { type: Schema.Types.Mixed }
+  size: { type: Schema.Types.Mixed },
+  jobs: [{ type: Schema.Types.ObjectId, ref: "Job" }]
 });
 
 const Company = mongoose.model("company", companySchema);

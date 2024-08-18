@@ -25,6 +25,7 @@ export interface ICompany extends Document {
   twitter?: any;
   size?: ILevel;
   refs?: any;
+  jobs?: IJob[];
 }
 
 export interface IJob extends Document {
