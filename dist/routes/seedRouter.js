@@ -26,11 +26,6 @@ exports.seedRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, func
         let data = yield response.json();
         for (let i = 1; i <= data.page_count; i++) {
             yield (0, seedCompanies_1.getCompaniesFromAPI)(i);
-            console.log("|||||||||||||||||||||||||||||||||||||||");
-            console.log("|||||||||||||||||||||||||||||||||||||||");
-            console.log(`||||| COMPLETED SEEDING PAGE ${i} |||||`);
-            console.log("|||||||||||||||||||||||||||||||||||||||");
-            console.log("|||||||||||||||||||||||||||||||||||||||");
         }
         res.status(200).json({ message: "Complete" });
     }

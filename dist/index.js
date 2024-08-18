@@ -13,7 +13,7 @@ const userRouter_1 = require("./routes/userRouter");
 const applicationRouter_1 = require("./routes/applicationRouter");
 const jobRouter_1 = require("./routes/jobRouter");
 const companyRouter_1 = require("./routes/companyRouter");
-const seedRouter_1 = require("./routes/seedRouter");
+// import { seedRouter } from "./routes/seedRouter";
 dotenv_1.default.config({ path: "./config.env" });
 // Connect to DB
 mongoose_1.default
@@ -38,7 +38,7 @@ app.use("/auth", userRouter_1.userRouter);
 app.use("/company", companyRouter_1.companyRouter);
 app.use("/job", jobRouter_1.jobRouter);
 app.use("/applications", applicationRouter_1.applicationRouter);
-app.use("/seed", seedRouter_1.seedRouter);
+// app.use("/seed", seedRouter);
 // Serve app
 const port = parseInt(process.env.PORT || "5000", 10);
 app.listen(port, () => {
