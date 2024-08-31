@@ -16,9 +16,7 @@ exports.seedRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const error_1 = require("../middleware/error");
 const seedCompanies_1 = require("../db/seedCompanies");
-// Create an instance of the Router
 exports.seedRouter = express_1.default.Router();
-// Use Error handling middleware
 exports.seedRouter.use(error_1.errorHandler);
 exports.seedRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -27,7 +25,7 @@ exports.seedRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, func
         for (let i = 1; i <= data.page_count; i++) {
             yield (0, seedCompanies_1.getCompaniesFromAPI)(i);
         }
-        res.status(200).json({ message: "Complete" });
+        res.status(200);
     }
     catch (error) {
         console.error("Error fetching companies:", error);

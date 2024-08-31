@@ -11,25 +11,34 @@ companyRouter.use(errorHandler);
 
 companyRouter.get("/", async (req, res) => {
   try {
-    const searchTerm = (req?.query?.search as string) || "";
-    // const limit = 30;
-    const page = Number(req?.query?.page) || 1;
-    const startIndex = page - 1; // * limit;
-
+    const searchTerm = (req.query.search as string) || "";
+    const industryParam = (req.query.industry as string) || "";
+    const locationParam = (req.query.location as string) || "";
+    const limit = 30;
+    const page = Number(req.query.page) || 1;
+    const startIndex = (page - 1) * limit;
     const query: Record<string, any> = {};
 
     if (searchTerm.length > 0) {
-      query.name = { $regex: new RegExp(searchTerm, "i") }; // case-insensitive search
+      query.name = { $regex: new RegExp(searchTerm, "i") }; // Case-insensitive search
+    }
+
+    if (industryParam.length > 0) {
+      query.industries = { $elemMatch: { name: { $regex: new RegExp(industryParam, "i") } } };
+    }
+
+    if (locationParam.length > 0) {
+      query.locations = { $elemMatch: { name: { $regex: new RegExp(locationParam, "i") } } };
     }
 
     const total = await Company.countDocuments(query);
-    const companies = await Company.find(query).skip(startIndex); // .limit(limit);
+    const companies = await Company.find(query).skip(startIndex).limit(limit);
 
     res.json({
       page,
-      // limit,
+      limit,
       total,
-      pages: Math.ceil(total), // / limit),
+      pages: Math.ceil(total / limit),
       data: companies
     });
   } catch (error) {
@@ -37,20 +46,6 @@ companyRouter.get("/", async (req, res) => {
     res.status(500).json({ error: "An error occurred while fetching companies." });
   }
 });
-
-// // Get all company records
-// companyRouter.get("/", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-//   try {
-//     const allCompanies = await Company.find();
-//     if (allCompanies) {
-//       res.json(allCompanies);
-//     } else {
-//       res.status(404).send("Company not found");
-//     }
-//   } catch (err) {
-//     next(err);
-//   }
-// });
 
 // Get company by ID
 companyRouter.get("/:id", async (req: Request, res: Response, next: NextFunction): Promise<void> => {

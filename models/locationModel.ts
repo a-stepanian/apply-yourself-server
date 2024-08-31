@@ -2,7 +2,6 @@ import mongoose, { ObjectId } from "mongoose";
 const Schema = mongoose.Schema;
 
 export interface ILocation {
-  _id: ObjectId;
   name: string;
 }
 

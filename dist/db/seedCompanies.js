@@ -25,38 +25,38 @@ let industriesCreated = 0;
 let jobsCreated = 0;
 function seedLocations(locations) {
     return __awaiter(this, void 0, void 0, function* () {
-        locations.forEach((y) => __awaiter(this, void 0, void 0, function* () {
+        for (const y of locations) {
             let location = yield locationModel_1.Location.findOne({ name: y.name }).exec();
-            if (!location) {
+            if (location === null) {
                 location = new locationModel_1.Location({ name: y.name });
                 yield location.save();
                 locationsCreated++;
             }
-        }));
+        }
     });
 }
 function seedCategories(categories) {
     return __awaiter(this, void 0, void 0, function* () {
-        categories.forEach((y) => __awaiter(this, void 0, void 0, function* () {
+        for (const y of categories) {
             let category = yield categoryModel_1.Category.findOne({ name: y.name }).exec();
-            if (!category) {
+            if (category === null) {
                 category = new categoryModel_1.Category({ name: y.name });
                 yield category.save();
                 categoriesCreated++;
             }
-        }));
+        }
     });
 }
 function seedIndustries(industries) {
     return __awaiter(this, void 0, void 0, function* () {
-        industries.forEach((y) => __awaiter(this, void 0, void 0, function* () {
+        for (const y of industries) {
             let industry = yield industryModel_1.Industry.findOne({ name: y.name }).exec();
-            if (!industry) {
+            if (industry === null) {
                 industry = new industryModel_1.Industry({ name: y.name });
                 yield industry.save();
                 industriesCreated++;
             }
-        }));
+        }
     });
 }
 function getJobsByCompanyNameFromAPI(companyName) {
@@ -66,9 +66,10 @@ function getJobsByCompanyNameFromAPI(companyName) {
             let data = yield response.json();
             let jobs = data === null || data === void 0 ? void 0 : data.results;
             if (!((jobs === null || jobs === void 0 ? void 0 : jobs.length) > 0)) {
-                return;
+                return [];
             }
-            const createdJobs = yield Promise.all(jobs.map((x) => __awaiter(this, void 0, void 0, function* () {
+            const createdJobs = [];
+            for (const x of jobs) {
                 if (x.locations && x.locations.length > 0) {
                     yield seedLocations(x.locations);
                 }
@@ -78,12 +79,13 @@ function getJobsByCompanyNameFromAPI(companyName) {
                 let job = new jobModel_1.default(Object.assign({}, x));
                 yield job.save();
                 jobsCreated++;
-                return job;
-            })));
+                createdJobs.push(job);
+            }
             return createdJobs;
         }
         catch (error) {
             console.log("Error in getJobsByCompanyNameFromAPI: ", error);
+            return [];
         }
     });
 }
@@ -94,7 +96,7 @@ function getCompaniesFromAPI(pageNumber) {
             let data = yield response.json();
             let companies = data === null || data === void 0 ? void 0 : data.results;
             if ((companies === null || companies === void 0 ? void 0 : companies.length) > 0) {
-                companies.forEach((x) => __awaiter(this, void 0, void 0, function* () {
+                for (const x of companies) {
                     if (x.locations && x.locations.length > 0) {
                         yield seedLocations(x.locations);
                     }
@@ -105,8 +107,8 @@ function getCompaniesFromAPI(pageNumber) {
                     let company = new companyModel_1.default(Object.assign(Object.assign({}, x), { jobs: jobList }));
                     yield company.save();
                     companiesCreated++;
-                    console.log(`Total Companies: ${companiesCreated}, Total Jobs: ${jobsCreated}, Total Locations: ${locationsCreated}, Total Categories: ${categoriesCreated},  Total Industries: ${industriesCreated}`);
-                }));
+                    console.log(`Total Companies: ${companiesCreated}, Total Jobs: ${jobsCreated}, Total Locations: ${locationsCreated}, Total Categories: ${categoriesCreated}, Total Industries: ${industriesCreated}`);
+                }
             }
         }
         catch (error) {

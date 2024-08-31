@@ -12,36 +12,36 @@ let industriesCreated = 0;
 let jobsCreated = 0;
 
 async function seedLocations(locations: IHasName[]) {
-  locations.forEach(async y => {
+  for (const y of locations) {
     let location = await Location.findOne({ name: y.name }).exec();
-    if (!location) {
+    if (location === null) {
       location = new Location({ name: y.name });
       await location.save();
       locationsCreated++;
     }
-  });
+  }
 }
 
 async function seedCategories(categories: IHasName[]) {
-  categories.forEach(async y => {
+  for (const y of categories) {
     let category = await Category.findOne({ name: y.name }).exec();
-    if (!category) {
+    if (category === null) {
       category = new Category({ name: y.name });
       await category.save();
       categoriesCreated++;
     }
-  });
+  }
 }
 
 async function seedIndustries(industries: IHasName[]) {
-  industries.forEach(async y => {
+  for (const y of industries) {
     let industry = await Industry.findOne({ name: y.name }).exec();
-    if (!industry) {
+    if (industry === null) {
       industry = new Industry({ name: y.name });
       await industry.save();
       industriesCreated++;
     }
-  });
+  }
 }
 
 async function getJobsByCompanyNameFromAPI(companyName: string) {
@@ -51,27 +51,27 @@ async function getJobsByCompanyNameFromAPI(companyName: string) {
     let jobs = data?.results as IJob[];
 
     if (!(jobs?.length > 0)) {
-      return;
+      return [];
     }
 
-    const createdJobs = await Promise.all(
-      jobs.map(async x => {
-        if (x.locations && x.locations.length > 0) {
-          await seedLocations(x.locations);
-        }
-        if (x.categories && x.categories.length > 0) {
-          await seedCategories(x.categories);
-        }
-        let job = new Job({ ...x });
-        await job.save();
-        jobsCreated++;
-        return job;
-      })
-    );
+    const createdJobs = [];
+    for (const x of jobs) {
+      if (x.locations && x.locations.length > 0) {
+        await seedLocations(x.locations);
+      }
+      if (x.categories && x.categories.length > 0) {
+        await seedCategories(x.categories);
+      }
+      let job = new Job({ ...x });
+      await job.save();
+      jobsCreated++;
+      createdJobs.push(job);
+    }
 
     return createdJobs;
   } catch (error) {
     console.log("Error in getJobsByCompanyNameFromAPI: ", error);
+    return [];
   }
 }
 
@@ -82,7 +82,7 @@ export async function getCompaniesFromAPI(pageNumber: number) {
     let companies = data?.results as ICompany[];
 
     if (companies?.length > 0) {
-      companies.forEach(async x => {
+      for (const x of companies) {
         if (x.locations && x.locations.length > 0) {
           await seedLocations(x.locations);
         }
@@ -94,9 +94,9 @@ export async function getCompaniesFromAPI(pageNumber: number) {
         await company.save();
         companiesCreated++;
         console.log(
-          `Total Companies: ${companiesCreated}, Total Jobs: ${jobsCreated}, Total Locations: ${locationsCreated}, Total Categories: ${categoriesCreated},  Total Industries: ${industriesCreated}`
+          `Total Companies: ${companiesCreated}, Total Jobs: ${jobsCreated}, Total Locations: ${locationsCreated}, Total Categories: ${categoriesCreated}, Total Industries: ${industriesCreated}`
         );
-      });
+      }
     }
   } catch (error) {
     console.log("Error in getCompaniesFromAPI: ", error);

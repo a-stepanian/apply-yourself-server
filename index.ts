@@ -10,7 +10,7 @@ import { companyRouter } from "./routes/companyRouter";
 import { categoryRouter } from "./routes/categoryRouter";
 import { industryRouter } from "./routes/industryRouter";
 import { locationRouter } from "./routes/locationRouter";
-// import { seedRouter } from "./routes/seedRouter";
+import { seedRouter } from "./routes/seedRouter";
 
 dotenv.config({ path: "./config.env" });
 
@@ -44,7 +44,7 @@ app.use("/applications", applicationRouter);
 app.use("/locations", locationRouter);
 app.use("/industries", industryRouter);
 app.use("/categories", categoryRouter);
-// app.use("/seed", seedRouter);
+app.use("/seed", seedRouter);
 
 // Serve app
 const port: number = parseInt(process.env.PORT || "5000", 10);

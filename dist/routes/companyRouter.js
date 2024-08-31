@@ -21,23 +21,30 @@ exports.companyRouter = express_1.default.Router();
 // Use Error handling middleware
 exports.companyRouter.use(error_1.errorHandler);
 exports.companyRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
     try {
-        const searchTerm = ((_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.search) || "";
-        // const limit = 30;
-        const page = Number((_b = req === null || req === void 0 ? void 0 : req.query) === null || _b === void 0 ? void 0 : _b.page) || 1;
-        const startIndex = page - 1; // * limit;
+        const searchTerm = req.query.search || "";
+        const industryParam = req.query.industry || "";
+        const locationParam = req.query.location || "";
+        const limit = 30;
+        const page = Number(req.query.page) || 1;
+        const startIndex = (page - 1) * limit;
         const query = {};
         if (searchTerm.length > 0) {
-            query.name = { $regex: new RegExp(searchTerm, "i") }; // case-insensitive search
+            query.name = { $regex: new RegExp(searchTerm, "i") }; // Case-insensitive search
+        }
+        if (industryParam.length > 0) {
+            query.industries = { $elemMatch: { name: { $regex: new RegExp(industryParam, "i") } } };
+        }
+        if (locationParam.length > 0) {
+            query.locations = { $elemMatch: { name: { $regex: new RegExp(locationParam, "i") } } };
         }
         const total = yield companyModel_1.default.countDocuments(query);
-        const companies = yield companyModel_1.default.find(query).skip(startIndex); // .limit(limit);
+        const companies = yield companyModel_1.default.find(query).skip(startIndex).limit(limit);
         res.json({
             page,
-            // limit,
+            limit,
             total,
-            pages: Math.ceil(total), // / limit),
+            pages: Math.ceil(total / limit),
             data: companies
         });
     }
@@ -46,19 +53,6 @@ exports.companyRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(500).json({ error: "An error occurred while fetching companies." });
     }
 }));
-// // Get all company records
-// companyRouter.get("/", async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-//   try {
-//     const allCompanies = await Company.find();
-//     if (allCompanies) {
-//       res.json(allCompanies);
-//     } else {
-//       res.status(404).send("Company not found");
-//     }
-//   } catch (err) {
-//     next(err);
-//   }
-// });
 // Get company by ID
 exports.companyRouter.get("/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
