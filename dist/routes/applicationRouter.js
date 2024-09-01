@@ -30,14 +30,10 @@ exports.applicationRouter.post("/", auth_1.default, (req, res) => __awaiter(void
         if (!((_a = job === null || job === void 0 ? void 0 : job.company[0]) === null || _a === void 0 ? void 0 : _a.name)) {
             return res.status(400).json({ message: "applicationRouter Error: job or job.company not found" });
         }
-        console.log("******************************job**************************************");
-        console.log(job);
         const company = yield companyModel_1.default.findOne({ name: job.company[0].name });
         if (!company) {
             return res.status(400).json({ message: "applicationRouter Error: company not found" });
         }
-        console.log("******************************company**************************************");
-        console.log(company);
         const newApplication = new applicationModel_1.default({
             user: userId,
             company: company._id,
