@@ -20,6 +20,6 @@ const applicationSchema = new Schema({
   status: { type: String }
 });
 
-const Application = mongoose.model("application", applicationSchema);
+const Application = mongoose.model("Application", applicationSchema);
 
 export default Application;

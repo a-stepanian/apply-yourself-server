@@ -140,9 +140,8 @@ userRouter.get("/", auth, async (req: IRequestWithUser, res: Response) => {
   const id = req.user;
   if (id) {
     try {
-      const foundUser = await User.findById(id);
-      const justTheName = { username: foundUser?.username ?? "" };
-      res.json(justTheName);
+      const foundUser = await User.findById(id).populate("applications");
+      res.json({ username: foundUser?.username ?? "", applications: foundUser?.applications });
     } catch (err) {
       console.error(err);
       res.status(500).send();

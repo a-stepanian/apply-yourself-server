@@ -23,6 +23,6 @@ const applicationSchema = new Schema({
     comments: { type: String },
     status: { type: String }
 });
-const Application = mongoose_1.default.model("application", applicationSchema);
+const Application = mongoose_1.default.model("Application", applicationSchema);
 exports.default = Application;
 //# sourceMappingURL=applicationModel.js.map

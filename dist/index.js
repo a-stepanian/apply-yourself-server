@@ -18,11 +18,15 @@ const industryRouter_1 = require("./routes/industryRouter");
 const locationRouter_1 = require("./routes/locationRouter");
 const seedRouter_1 = require("./routes/seedRouter");
 dotenv_1.default.config({ path: "./config.env" });
+// Fixes Mongoose Deprecation Warning
+mongoose_1.default.set("strictQuery", true);
 // Connect to DB
 mongoose_1.default
     .connect((_a = process.env.ATLAS_URI) !== null && _a !== void 0 ? _a : "")
     .then(() => {
-    console.log("Connected to DB");
+    console.log("\x1b[36m%s\x1b[0m", "-----------------------------");
+    console.log("\x1b[36m%s\x1b[0m", "*  Connected to the Database");
+    serveApp();
 })
     .catch(err => {
     console.log("DB CONNECTION ERROR", err);
@@ -30,7 +34,7 @@ mongoose_1.default
 // Initialize server
 const app = (0, express_1.default)();
 app.use(express_1.default.json({ limit: "50mb" }));
-app.use(express_1.default.urlencoded({ limit: "50mb" }));
+app.use(express_1.default.urlencoded({ limit: "50mb", extended: true }));
 app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)({
     origin: ["http://localhost:3000", "https://client-apply-yourself.netlify.app"],
@@ -46,8 +50,11 @@ app.use("/industries", industryRouter_1.industryRouter);
 app.use("/categories", categoryRouter_1.categoryRouter);
 app.use("/seed", seedRouter_1.seedRouter);
 // Serve app
-const port = parseInt(process.env.PORT || "5000", 10);
-app.listen(port, () => {
-    console.log(`Serving on port ${port}`);
-});
+function serveApp() {
+    const port = parseInt(process.env.PORT || "5000", 10);
+    app.listen(port, () => {
+        console.log("\x1b[36m%s\x1b[0m", `*  Serving on Port ${port}...`);
+        console.log("\x1b[36m%s\x1b[0m", "-----------------------------");
+    });
+}
 //# sourceMappingURL=index.js.map

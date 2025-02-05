@@ -146,9 +146,8 @@ exports.userRouter.get("/", auth_1.default, (req, res) => __awaiter(void 0, void
     const id = req.user;
     if (id) {
         try {
-            const foundUser = yield userModel_1.default.findById(id);
-            const justTheName = { username: (_a = foundUser === null || foundUser === void 0 ? void 0 : foundUser.username) !== null && _a !== void 0 ? _a : "" };
-            res.json(justTheName);
+            const foundUser = yield userModel_1.default.findById(id).populate("applications");
+            res.json({ username: (_a = foundUser === null || foundUser === void 0 ? void 0 : foundUser.username) !== null && _a !== void 0 ? _a : "", applications: foundUser === null || foundUser === void 0 ? void 0 : foundUser.applications });
         }
         catch (err) {
             console.error(err);
